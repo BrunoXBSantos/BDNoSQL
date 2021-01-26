@@ -1,3 +1,5 @@
+// QUERIES Oracledb
+
 -- 1 - Cidades com departamentos
 select distinct city from departments
 join locations
