@@ -92,7 +92,10 @@ job_history_departments_jobs = '''SELECT employee_id AS EMPLOYEE_ID,
                                 INNER JOIN jobs ON job_history.job_id=jobs.job_id
                             ''' 
 
-
+manager = '''SELECT DISTINCT manager_id AS MANAGER_ID
+             FROM employees
+             WHERE manager_id IS NOT NULL
+             ''' 
 
 
 def oracle2csv(query, table, conn):
@@ -139,6 +142,7 @@ if __name__ == '__main__':
         oracle2csv(locations,"locations", conn)
         oracle2csv(regions,"regions", conn)
         oracle2csv(job_history_departments_jobs,"job_history_departments_jobs", conn)
+        oracle2csv(manager,"manager", conn)
 
         
     

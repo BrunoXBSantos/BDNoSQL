@@ -86,7 +86,7 @@ LOAD CSV WITH HEADERS FROM 'file:///employees.csv' AS row
 MATCH (job_history:Job_History {idEmployee: row.EMPLOYEE_ID})
 MATCH (employee:Employee {idEmployee: row.EMPLOYEE_ID})
 
-CREATE (job_history)-[:ANTIGO_JOB]->(employee)
+CREATE (employee)-[:TRABALHOU_EM]->(job_history)
 RETURN employee,job_history;
 
 // Relação Department -> Locations
@@ -114,8 +114,15 @@ CREATE (country)-[:GLOBAL]->(region)
 RETURN country,region;
 
 
+// Relação employee -> manager
+LOAD CSV WITH HEADERS FROM "file:///employees.csv" AS row
+MATCH (employee:Employee {idEmployee: row.EMPLOYEE_ID})
+MATCH (manager:Employee {idEmployee: row.MANAGER_ID})
+MERGE (employee)-[:GERIDO_POR]->(manager);
+
+
 match (n) return n
 match (n) detach delete n
 
 match (e:Employee{firstName:"Neena"}) -- (p)
-return e, p
+return e
