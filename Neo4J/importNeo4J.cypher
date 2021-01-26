@@ -90,23 +90,28 @@ CREATE (job_history)-[:ANTIGO_JOB]->(employee)
 RETURN employee,job_history;
 
 // Relação Department -> Locations
-LOAD CSV WITH HEADERS FROM 'file:///departments.csv' AS row
+LOAD CSV WITH HEADERS FROM 'file:///locations.csv' AS row
 MATCH (department:Department {idLocation: row.LOCATION_ID})
 MATCH (location:Location {idLocation: row.LOCATION_ID})
 
 CREATE (department)-[:ESTA_PRESENTE]->(location)
 RETURN department,location;
 
-// Relação Staff-Morada
-// Relação Staff-Loja
-LOAD CSV WITH HEADERS FROM 'file:///staff.csv' AS row
-MATCH (staff:Staff {idStaff: row.idStaff})
-MATCH (store:Store {idStore: row.idStore})
-MATCH (address:Address {idAddress: row.idAddress})
+// Relação locations -> countries
+LOAD CSV WITH HEADERS FROM 'file:///countries.csv' AS row
+MATCH (country:Country {idCountry: row.COUNTRY_ID})
+MATCH (location:Location {idCountry: row.COUNTRY_ID})
 
-CREATE (staff)-[:VIVE_EM]->(address)
-CREATE (staff)-[:TRABALHA_EM]->(store)
-RETURN staff,address,store;
+CREATE (location)-[:ESTA_HOSPEDADA]->(country)
+RETURN country,location;
+
+// Relação countries -> regions
+LOAD CSV WITH HEADERS FROM 'file:///regions.csv' AS row
+MATCH (country:Country {idRegion: row.REGION_ID})
+MATCH (region:Region {idRegion: row.REGION_ID})
+
+CREATE (country)-[:GLOBAL]->(region)
+RETURN country,region;
 
 
 match (n) return n
