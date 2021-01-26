@@ -11,4 +11,8 @@ return n.firstName as Name, n.hireDate as HireDate, n.salary as Salary
 match (e:Employee) <-[r:ANTIGO_JOB]- (a:Job_History)
 return e.firstName as Name, count(r) as NumberJobs
 
-
+### 3 -> Retorna top 5 dos salários
+match (e:Employee) 
+return e.firstName as Name, toInteger(e.salary) as Salary
+order by toInteger(e.salary) desc
+limit 5;
