@@ -33,3 +33,8 @@ RETURN d.nameDepartmant AS NameDepartment, toInteger(l.postalCode) AS PostalCode
 order by NameDepartment
 
 // 8 ->
+
+MATCH (j:Job) <-[:TRABALHA_EM]-(E:Employee)-[:PERTENCE_AO]->(d:Department)-[:SEDIADO_EM]->(l:Location)
+RETURN j.jobTitle AS Job, l.city AS City, d.nameDepartmant AS Department, 
+	   (toInteger(j.maxSalary) + toInteger(j.minSalary))/2 AS Salary
+order BY Salary DESC
