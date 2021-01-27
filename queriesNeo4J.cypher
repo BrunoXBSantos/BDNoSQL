@@ -27,6 +27,9 @@ return e.firstName as Name, toInteger(e.salary) as Salary
 order by toInteger(e.salary) desc  
 limit 5;
 
-// 7 ->
+// 7 -> Retorna uma lista de departamentos por codigo postal e por país
+MATCH (d:Department) -[:SEDIADO_EM]->(l:Location) -[:LOCALIZADO_EM]-> (c:Country)  
+RETURN d.nameDepartmant AS NameDepartment, toInteger(l.postalCode) AS PostalCode, c.nameCountry AS Country  
+order by NameDepartment
 
 // 8 ->
