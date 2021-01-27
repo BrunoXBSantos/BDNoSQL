@@ -1,6 +1,6 @@
 // QUERIES Neo4J
 
-// 1 -> Retorna o numero de departamentos por localização
+// 1 -> Retorna as Cidades com departamentos
 match (d:Department) -[r:SEDIADO_EM]-> (l:Location)  
 return DISTINCT l.city AS City, count(r) as Number
 
