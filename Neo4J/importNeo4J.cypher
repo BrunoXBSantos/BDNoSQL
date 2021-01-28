@@ -39,9 +39,7 @@ RETURN employee;
 // Informações do historial dos trabalhos
 LOAD CSV WITH HEADERS FROM 'file:///job_history_departments_jobs.csv' AS row
 CREATE (job_history:Job_History {idEmployee: row.EMPLOYEE_ID}) 
-SET job_history.startDate= row.START_DATE, 
-	job_history.endDate = row.END_DATE,
-    job_history.department_name = row.DEPARTMENT_NAME,
+SET job_history.department_name = row.DEPARTMENT_NAME,
     job_history.manager_id = row.MANAGER_ID,
     job_history.job_title= row.JOB_TITLE, 
 	job_history.min_salary = row.min_salary,
@@ -66,8 +64,7 @@ SET location.streerAddress= row.STREET_ADDRESS,
     location.idCountry = row.COUNTRY_ID
 RETURN location;
 
-
-////////// 2. INSERIR RELACOES ENTRE NODOSS. //////////////
+////////// 2. INSERIR RELAÇÕES ENTRE NODOS. //////////////
 
 // Relação Employee -> Job
 // Relação Employee -> Department
@@ -75,24 +72,22 @@ LOAD CSV WITH HEADERS FROM 'file:///employees.csv' AS row
 MATCH (employee:Employee {idEmployee: row.EMPLOYEE_ID})
 MATCH (job:Job {idJob: row.JOB_ID})
 MATCH (department:Department {idDepartment: row.DEPARTMENT_ID})
-
 CREATE (employee)-[:TRABALHA_EM]->(job)
 CREATE (employee)-[:PERTENCE_AO]->(department)
 RETURN employee, job, department;
 
 // Relação Employee -> job_history_departments_jobs
-LOAD CSV WITH HEADERS FROM 'file:///employees.csv' AS row
+LOAD CSV WITH HEADERS FROM 'file:///job_history_departments_jobs.csv' AS row
 MATCH (job_history:Job_History {idEmployee: row.EMPLOYEE_ID})
 MATCH (employee:Employee {idEmployee: row.EMPLOYEE_ID})
-
-CREATE (employee)-[:TRABALHOU_EM]->(job_history)
-RETURN employee,job_history;
+MERGE (employee)-[t:TRABALHOU_EM]->(job_history)
+ON CREATE SET t.startDate = row.START_DATE,
+              t.endDate = row.END_DATE;
 
 // Relação Department -> Locations
 LOAD CSV WITH HEADERS FROM 'file:///locations.csv' AS row
 MATCH (department:Department {idLocation: row.LOCATION_ID})
 MATCH (location:Location {idLocation: row.LOCATION_ID})
-
 CREATE (department)-[:SEDIADO_EM]->(location)
 RETURN department,location;
 
@@ -100,7 +95,6 @@ RETURN department,location;
 LOAD CSV WITH HEADERS FROM 'file:///countries.csv' AS row
 MATCH (country:Country {idCountry: row.COUNTRY_ID})
 MATCH (location:Location {idCountry: row.COUNTRY_ID})
-
 CREATE (location)-[:LOCALIZADO_EM]->(country)
 RETURN country,location;
 
@@ -108,7 +102,6 @@ RETURN country,location;
 LOAD CSV WITH HEADERS FROM 'file:///regions.csv' AS row
 MATCH (country:Country {idRegion: row.REGION_ID})
 MATCH (region:Region {idRegion: row.REGION_ID})
-
 CREATE (country)-[:CONTIDO_EM]->(region)
 RETURN country,region;
 
