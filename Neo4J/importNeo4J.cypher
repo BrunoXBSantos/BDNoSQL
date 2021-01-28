@@ -67,7 +67,6 @@ SET location.streerAddress= row.STREET_ADDRESS,
 RETURN location;
 
 
-
 ////////// 2. INSERIR RELACOES ENTRE NODOSS. //////////////
 
 // Relação Employee -> Job
@@ -78,7 +77,7 @@ MATCH (job:Job {idJob: row.JOB_ID})
 MATCH (department:Department {idDepartment: row.DEPARTMENT_ID})
 
 CREATE (employee)-[:TRABALHA_EM]->(job)
-CREATE (employee)-[:PERTENCE]->(department)
+CREATE (employee)-[:PERTENCE_AO]->(department)
 RETURN employee, job, department;
 
 // Relação Employee -> job_history_departments_jobs
@@ -94,7 +93,7 @@ LOAD CSV WITH HEADERS FROM 'file:///locations.csv' AS row
 MATCH (department:Department {idLocation: row.LOCATION_ID})
 MATCH (location:Location {idLocation: row.LOCATION_ID})
 
-CREATE (department)-[:ESTA_PRESENTE]->(location)
+CREATE (department)-[:SEDIADO_EM]->(location)
 RETURN department,location;
 
 // Relação locations -> countries
@@ -102,7 +101,7 @@ LOAD CSV WITH HEADERS FROM 'file:///countries.csv' AS row
 MATCH (country:Country {idCountry: row.COUNTRY_ID})
 MATCH (location:Location {idCountry: row.COUNTRY_ID})
 
-CREATE (location)-[:ESTA_HOSPEDADA]->(country)
+CREATE (location)-[:LOCALIZADO_EM]->(country)
 RETURN country,location;
 
 // Relação countries -> regions
@@ -110,9 +109,8 @@ LOAD CSV WITH HEADERS FROM 'file:///regions.csv' AS row
 MATCH (country:Country {idRegion: row.REGION_ID})
 MATCH (region:Region {idRegion: row.REGION_ID})
 
-CREATE (country)-[:GLOBAL]->(region)
+CREATE (country)-[:CONTIDO_EM]->(region)
 RETURN country,region;
-
 
 // Relação employee -> manager
 LOAD CSV WITH HEADERS FROM "file:///employees.csv" AS row
@@ -120,9 +118,8 @@ MATCH (employee:Employee {idEmployee: row.EMPLOYEE_ID})
 MATCH (manager:Employee {idEmployee: row.MANAGER_ID})
 MERGE (employee)-[:GERIDO_POR]->(manager);
 
-
-match (n) return n
-match (n) detach delete n
-
-match (e:Employee{firstName:"Neena"}) -- (p)
-return e
+// Relação department -> manager
+LOAD CSV WITH HEADERS FROM "file:///departments.csv" AS row
+MATCH (departments:Department {idDepartment: row.DEPARTMENT_ID})
+MATCH (employee:Employee {idEmployee: row.MANAGER_ID})
+MERGE (employee)-[:GERENTE_DO]->(departments);
