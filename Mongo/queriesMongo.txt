@@ -2,10 +2,10 @@
 db.departments.distinct("location.city");
 
 -- Query 2 - Empregados com mudanças de empregos
-db.employees.aggregate([ { '$project': { '_id': 0, 'first_name': 1, 'ocorrencias': { '$size': { '$ifNull': [ '$job_history', [] ] } } } }, { '$match': { 'ocorrencias': {'$gt': 0 } } }, { '$sort': { 'ocorrencias': -1 } }])
+db.employees.aggregate([ { '$project': { '_id': 0, 'first_name': 1, 'ocorrencias': { '$size': { '$ifNull': [ '$job_history', [] ] } } } }, { '$match': { 'ocorrencias': {'$gt': 0 } } }, { '$sort': { 'ocorrencias': -1 } }]);
 
 -- Query 3 - Conteudo geral da BD
-db.employees.aggregate([{$lookup: { from: 'departments', localField: 'department_id', foreignField: 'department_id', as: 'departments'}}])
+db.employees.aggregate([{$lookup: { from: 'departments', localField: 'department_id', foreignField: 'department_id', as: 'departments'}}]).pretty();
 
 -- Query 4 - Empregados que iniciam com a letra J
 db.employees.find({"first_name": /^J.*/}, {_id: 0, job: 0, job_history: 0, department: 0}).pretty();
